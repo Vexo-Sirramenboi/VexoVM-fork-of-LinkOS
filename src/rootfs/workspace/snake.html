@@ -1,0 +1,134 @@
+<style>
+  #snake-app {
+    display: grid;
+    justify-items: center;
+    gap: 10px;
+    color: #241f31;
+    outline: none;
+  }
+
+  #snake-header {
+    width: min(100%, 320px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  #snake-canvas {
+    width: min(100%, 320px);
+    aspect-ratio: 1;
+    background: #17141d;
+    border: 2px solid #e95420;
+    image-rendering: pixelated;
+  }
+
+  #snake-status {
+    margin: 0;
+    min-height: 20px;
+  }
+</style>
+
+<section id="snake-app" tabindex="0">
+  <div id="snake-header">
+    <strong>Snake</strong>
+    <span>Score: <b id="snake-score">0</b></span>
+    <button id="snake-restart">Restart</button>
+  </div>
+  <canvas id="snake-canvas" width="320" height="320"></canvas>
+  <p id="snake-status">Use Arrow keys or WASD.</p>
+</section>
+
+<script>
+  (() => {
+    const app = document.getElementById('snake-app');
+    const canvas = document.getElementById('snake-canvas');
+    const context = canvas.getContext('2d');
+    const score = document.getElementById('snake-score');
+    const status = document.getElementById('snake-status');
+    const size = 20;
+    const cell = canvas.width / size;
+    let snake;
+    let direction;
+    let pendingDirection;
+    let food;
+    let timer;
+
+    function placeFood() {
+      do {
+        food = {
+          x: Math.floor(Math.random() * size),
+          y: Math.floor(Math.random() * size)
+        };
+      } while (snake.some(part => part.x === food.x && part.y === food.y));
+    }
+
+    function reset() {
+      clearInterval(timer);
+      snake = [{ x: 10, y: 10 }, { x: 9, y: 10 }, { x: 8, y: 10 }];
+      direction = { x: 1, y: 0 };
+      pendingDirection = direction;
+      score.textContent = '0';
+      status.textContent = 'Use Arrow keys or WASD.';
+      placeFood();
+      draw();
+      timer = setInterval(tick, 110);
+      app.focus();
+    }
+
+    function tick() {
+      direction = pendingDirection;
+      const head = {
+        x: snake[0].x + direction.x,
+        y: snake[0].y + direction.y
+      };
+      const hitWall = head.x < 0 || head.y < 0 || head.x >= size || head.y >= size;
+      const hitSelf = snake.some(part => part.x === head.x && part.y === head.y);
+      if (hitWall || hitSelf) {
+        clearInterval(timer);
+        status.textContent = 'Game over. Press Restart.';
+        return;
+      }
+
+      snake.unshift(head);
+      if (head.x === food.x && head.y === food.y) {
+        score.textContent = String(Number(score.textContent) + 1);
+        placeFood();
+      } else {
+        snake.pop();
+      }
+      draw();
+    }
+
+    function draw() {
+      context.fillStyle = '#17141d';
+      context.fillRect(0, 0, canvas.width, canvas.height);
+      context.fillStyle = '#e95420';
+      context.fillRect(food.x * cell + 2, food.y * cell + 2, cell - 4, cell - 4);
+      snake.forEach((part, index) => {
+        context.fillStyle = index === 0 ? '#f6d32d' : '#33d17a';
+        context.fillRect(part.x * cell + 1, part.y * cell + 1, cell - 2, cell - 2);
+      });
+    }
+
+    const directions = {
+      ArrowUp: { x: 0, y: -1 },
+      w: { x: 0, y: -1 },
+      ArrowDown: { x: 0, y: 1 },
+      s: { x: 0, y: 1 },
+      ArrowLeft: { x: -1, y: 0 },
+      a: { x: -1, y: 0 },
+      ArrowRight: { x: 1, y: 0 },
+      d: { x: 1, y: 0 }
+    };
+
+    addEventListener('keydown', event => {
+      const next = directions[event.key];
+      if (!next || next.x === -direction.x && next.y === -direction.y) return;
+      event.preventDefault();
+      pendingDirection = next;
+    });
+    document.getElementById('snake-restart').addEventListener('click', reset);
+    reset();
+  })();
+</script>

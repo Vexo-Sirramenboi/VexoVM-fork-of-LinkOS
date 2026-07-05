@@ -1,0 +1,6 @@
+<main>
+  <h1>linkOS preview</h1>
+  <p>This page is running inside the Browser window, but it can still send a message linkOS.</p>
+  <p>Click the button and watch for a desktop notification.</p>
+  <button onclick="parent.postMessage({type:'sandbox-note', text:'Browser page says hello to linkOS'}, '*')">Send message to linkOS</button>
+</main>

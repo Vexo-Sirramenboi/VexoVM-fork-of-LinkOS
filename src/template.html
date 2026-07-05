@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>linkOS</title>
+  <style>
+<!-- LINKOS_CSS -->
+  </style>
+</head>
+<body>
+  <main class="desktop" id="desktop">
+    <div class="wallpaper" aria-hidden="true">
+    </div>
+
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark">L</span>
+        <span>linkOS</span>
+      </div>
+      <div class="status-line" id="statusLine">booting portable workstation...</div>
+      <nav class="top-actions" aria-label="Session actions">
+        <button id="exportButton" title="Generate a compressed standalone boot URL">Export URL</button>
+        <button id="resetButton" title="Reset virtual machine state">Reset</button>
+      </nav>
+    </header>
+
+    <section class="workspace" id="workspace" aria-label="linkOS workspace"></section>
+
+    <section class="url-box" id="urlBox" aria-label="Boot URL output">
+      <div class="url-meta">
+        <span id="urlStats">No export yet</span>
+        <button id="hideUrlButton">Hide</button>
+      </div>
+      <textarea id="urlOutput" spellcheck="false" readonly></textarea>
+    </section>
+
+    <footer class="dock" id="dock" aria-label="Open applications"></footer>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </main>
+
+  <script>
+<!-- LINKOS_JS -->
+  </script>
+</body>
+</html>
