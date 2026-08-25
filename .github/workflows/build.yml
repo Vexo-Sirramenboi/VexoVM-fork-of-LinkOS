@@ -1,0 +1,33 @@
+name: Build VEXO WebVM
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build WebVM
+        run: npm run build
+
+      - name: Save build
+        uses: actions/upload-artifact@v4
+        with:
+          name: vexo-webvm
+          path: dist/
